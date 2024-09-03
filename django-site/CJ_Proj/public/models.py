@@ -4,7 +4,7 @@ from django.utils import timezone
 from django.conf import settings
 
 class User(AbstractUser):
-    badgeur = models.BooleanField()
+    badgeur = models.BooleanField(default=False)
 
 
 class Manga(models.Model):
@@ -27,7 +27,7 @@ class Pret_CJ(models.Model):
     jeu = models.ForeignKey(Jeux, on_delete=models.CASCADE)
 
 
-class Pret_CJ(models.Model):
+class Pret_AnimINT(models.Model):
     date_debut_livre = models.DateTimeField(default=timezone.now)
     date_fin_livre = models.DateTimeField(default=timezone.now)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
