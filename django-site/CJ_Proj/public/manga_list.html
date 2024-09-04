@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Liste des Mangas</title>
+</head>
+<body>
+    <h1>Liste des Mangas</h1>
+    <ul>
+        {% for manga in mangas %}
+            <li>{{ manga.nom_serie }} - Tome {{ manga.num_tome }} (Caution: {{ manga.caution_livre }}€)</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

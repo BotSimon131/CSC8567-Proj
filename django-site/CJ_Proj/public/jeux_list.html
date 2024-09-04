@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Liste des Jeux</title>
+</head>
+<body>
+    <h1>Liste des Jeux</h1>
+    <ul>
+        {% for jeu in jeux %}
+            <li>{{ jeu.nom_jeux }} (Caution: {{ jeu.caution_jeux }}€)</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
