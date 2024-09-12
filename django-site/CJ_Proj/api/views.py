@@ -7,7 +7,6 @@ from .models import Manga, PretAnimInt
 from .serializers import PretAnimIntSerializer
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])  # L'utilisateur doit être connecté
 def reserver_manga(request, manga_id):
     user = request.user
     
