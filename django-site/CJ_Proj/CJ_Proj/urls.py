@@ -16,8 +16,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from django.urls import path
+from .views import reserver_manga
 
 urlpatterns = [
     path("public/", include("public.urls")),
     path("admin/", admin.site.urls),
+    path('api/reserver/manga/<int:manga_id>/', reserver_manga, name='reserver_manga'),
+
 ]
