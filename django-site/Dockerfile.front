@@ -1,1 +1,14 @@
-FROM python:latest
+FROM python:3.12-alpine
+
+WORKDIR /web
+
+COPY ./requirements.txt /web
+
+RUN pip install -r requirements.txt
+
+COPY ./entrypoint.sh /web
+COPY ./Cj_Proj/CJ_Proj /web/CJ_Proj 
+COPY ./Cj_Proj/public /web/public
+COPY ./CJ_Proj/manage.py /web
+
+ENTRYPOINT [ "./entrypoint.sh" ]
