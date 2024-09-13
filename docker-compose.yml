@@ -1,1 +1,50 @@
-# Créez ici votre docker compose
+version: '3.9'
+
+services:
+
+  db:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=django
+      - POSTGRES_PASSWORD=django
+      - POSTGRES_DB=cj_proj
+    networks:
+      cj:
+
+  public:
+    container_name: public
+    build:
+      context: django-site/
+      dockerfile: ./Dockerfile.front
+    ports:
+      - 8000:8000
+    environment:
+      - POSTGRES_USER=django
+      - POSTGRES_PASSWORD=django
+      - POSTGRES_DB=cj_proj
+      - DJANGO_APPS=public
+    depends_on:
+      - db
+    networks:
+      cj:
+
+  api:
+    container_name: api
+    build:
+      context: django-site/
+      dockerfile: ./Dockerfile.api
+    ports:
+      - 8001:8001
+    environment:
+      - POSTGRES_USER=django
+      - POSTGRES_PASSWORD=django
+      - POSTGRES_DB=cj_proj
+      - DJANGO_APPS=api
+    depends_on:
+      - db
+    networks:
+      cj:
+
+networks:
+  cj:
