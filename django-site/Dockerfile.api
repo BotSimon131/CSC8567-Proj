@@ -6,9 +6,8 @@ COPY ./requirements.txt /web
 
 RUN pip install -r requirements.txt
 
-COPY ./entrypoint.sh /web
-COPY ./CJ_Proj/CJ_Proj /web/CJ_Proj 
-COPY ./CJ_Proj/api /web/api
-COPY ./CJ_Proj/manage.py /web
+COPY ./entrypoint.api.sh /web
+COPY ./CJ_Proj /web
 
-ENTRYPOINT [ "./entrypoint.sh" ]
+
+ENTRYPOINT [ "./entrypoint.api.sh" ]

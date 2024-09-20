@@ -1,6 +1,21 @@
 version: '3.9'
+volumes:
+  volume-pgdata:
+
 
 services:
+  nginx:
+    image: nginx:alpine
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - api
+      - public
+    networks:
+      cj:
+
 
   db:
     image: postgres
@@ -9,6 +24,8 @@ services:
       - POSTGRES_USER=django
       - POSTGRES_PASSWORD=django
       - POSTGRES_DB=cj_proj
+    volumes:
+      - volume-pgdata:/var/lib/postgresql/data
     networks:
       cj:
 
@@ -20,12 +37,14 @@ services:
     ports:
       - 8000:8000
     environment:
-      - POSTGRES_USER=django
-      - POSTGRES_PASSWORD=django
-      - POSTGRES_DB=cj_proj
-      - DJANGO_APPS=public
+      - DB_USER=django
+      - DB_PWSD=django
+      - DB_NAME=cj_proj
+      - DB_HOST=db
+      - DB_TYPE=pgsql
     depends_on:
       - db
+      - api
     networks:
       cj:
 
@@ -35,12 +54,13 @@ services:
       context: django-site/
       dockerfile: ./Dockerfile.api
     ports:
-      - 8001:8001
+      - 8001:8000  
     environment:
-      - POSTGRES_USER=django
-      - POSTGRES_PASSWORD=django
-      - POSTGRES_DB=cj_proj
-      - DJANGO_APPS=api
+      - DB_USER=django
+      - DB_PWSD=django
+      - DB_NAME=cj_proj
+      - DB_HOST=db
+      - DB_TYPE=pgsql 
     depends_on:
       - db
     networks:
@@ -48,3 +68,12 @@ services:
 
 networks:
   cj:
+
+
+
+
+
+
+
+
+
