@@ -107,3 +107,150 @@ sudo apt install kubectl
 ```
 
 Et c'est parti !
+
+
+
+
+Q1 : Vous disposez d'un projet Django dans lequel une application public a été créée. Décrivez la suite de requêtes et d'exécutions permettant l'affichage d'une page HTML index.html à l'URL global / via une application public, ne nécessitant pas de contexte de données. Vous décrirez la position exacte dans l'arborescence des répertoires des différents fichiers utiles à cette exécution.
+
+Réponse : 
+Voici les différentes étapes : 
+
+Création de la vue public 
+Dans le répertoir CSC8567-Proj/django-site/projet/public
+Ajouter les lignes dans le fichier views.py : 
+	from django.shortcuts import render
+	def vue(request):
+return render(request, 'public/templates/index.html')	
+
+Configuration de l’url dans public
+Dans le répertoir CSC8567-Proj/django-site/projet/public
+
+Ajouter dans “urlpatterns” la ligne dans le fichier urls.py de projet:
+path(‘ ‘, views.vue, name='vue')
+
+Configuration de l’url dans le projet
+Dans le répertoir CSC8567-Proj/django-site/projet/projet
+Ajouter dans “urlpatterns” la ligne dans le fichier urls.py du projet: 
+path(' ', include("public.urls")) 
+
+
+Création de la page index.html
+Dans le répertoir CSC8567-Proj/django-site/projet/public
+Créer le répertoire “ templates”
+Dans ce répertoire, créer le fichier “index.html” et le compléter
+
+Lancement du server
+Taper la commande : “ python manage.py runserver ” dans un terminal dans le répertoir CSC8567-Proj/django-site/projet
+
+
+
+Q2: Dans quelle(s) section(s) de quel(s) fichier(s) peut-on configurer la base de données que l'on souhaite utiliser pour un projet Django ?
+
+Réponse : 
+On peut configurer la base de donnée que l’on souhaite utiliser dans le fichier “settings.py” présent dans le répertoire  CSC8567-Proj/django-site/projet/projet
+
+
+Q3: Dans quel(s) fichier(s) peut-on configurer le fichier de paramètres que l'on souhaite faire utiliser par le projet Django ? Si plusieurs fichiers sont à mentionner, expliquez le rôle de chaque fichier.
+Réponse : 
+On peut configurer le fichier de paramètres que l'on souhaite faire utiliser par le projet Django dans le fichier  “manage.py” (qui est utiliser pour lancer le serveur par exemple), “asgi.py”et “wsgi.py”. Ces deux fichiers servent au déploiement de l’application Django sur des serveur web
+ 
+Q4:  Nous nous plaçons à la racine de votre projet Django. Quel effet a l'exécution python manage.py makemigrations ? Et l'exécution python manage.py migrate ? Quel(s) fichier(s) sont mis en oeuvre pendant ces exécutions ?
+Réponse : 
+“python manage.py makemigrations” affiche les migrations de base de données qui seront faites
+“python manage.py migrate” effectue les migrations de base de données
+
+Les fichiers mis en oeuvre seront créés dans un dossier appelé “migrations”
+
+Q5: Expliquez l'effet et la syntaxe de ces commandes, communément vues dans des fichiers Dockerfile : FROM, RUN, WORKDIR, EXPOSE, CMD 
+
+Réponse:
+FROM: Spécifie l’image sur laquelle l'image Docker sera construite
+RUN: Lance une commande
+WORKDIR: Définit le répertoire de travail dans le conteneur
+EXPOSE: Indique à Docker le port à utiliser pour le conteneur
+CMD: Spécifie la commande par défaut à lancer dans le conteneur
+
+Q6: Dans la définition d'un service dans le fichier docker-compose.yml, expliquez l'effet des mentions :
+
+ports:
+    - "80:80"
+Réponse:
+Elle sert à mapper des ports entre le conteneur et la machine “physique”
+
+build: 
+   		context: .
+    	dockerfile: Dockerfile.api
+Réponse:
+Indique que le service doit être construit à partir d’une image Docker (définie par Dockerfile.api)
+
+
+
+
+depends_on:
+   		 - web
+    	- api
+Réponse:
+Indique que le service dépend des services nommés “web” et “api”
+
+environment:
+  		POSTGRES_DB: ${POSTGRES_DB}
+    		POSTGRES_USER: ${POSTGRES_USER}
+    		POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+Réponse:
+Spécifie la base de donnée externe à utiliser pour la ou les applications Django ainsi que comment l’atteindre (via un user et un mot de passe). Des variables d’environnement sont ici utilisées
+
+Q7: Citez une méthode pour définir des variables d'environnement dans un conteneur.
+
+Réponse:
+Il est possible de les spécifier dans le fichier “docker-compose.yml”. Par exemple :              
+
+environment:
+      		- POSTGRES_USER=django
+      		- POSTGRES_PASSWORD=django
+      		- POSTGRES_DB=cj_proj
+
+
+Q8: Dans un même réseau Docker, nous disposons d'un conteneur nginx (utilisant l'image nginx:latest) et d'un conteneur web (utilisant une image contenant un projet web Django, ayant la commande python manage.py runserver 0.0.0.0:8000 de lancée au démarrage du conteneur). Comment adresser le serveur web tournant dans le conteneur web depuis le conteneur nginx, sans utiliser les adresses IP des conteneurs ?
+
+Réponse:
+Tout d’abord, il faut ajouter dans le fichier “docker-compose.yml” les lignes suivantes : 
+
+version: '3.9'
+volumes:
+  volume-pgdata:
+
+services:
+  nginx:
+    image: nginx:alpine
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - web
+    networks:
+      cj:
+  web:
+    command: python manage.py runserver 0.0.0.0:8000
+    expose:
+      - "8000"
+    networks:
+      - web
+
+Puis dans le fichier nginx.conf : 
+
+server {
+    listen 80 default_server;
+    
+    location /web/ {
+        proxy_pass http://public:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+
+
+
