@@ -108,7 +108,7 @@ sudo apt install kubectl
 
 Et c'est parti !
 
-
+## Réponses aux questions
 
 
 Q1 : Vous disposez d'un projet Django dans lequel une application public a été créée. Décrivez la suite de requêtes et d'exécutions permettant l'affichage d'une page HTML index.html à l'URL global / via une application public, ne nécessitant pas de contexte de données. Vous décrirez la position exacte dans l'arborescence des répertoires des différents fichiers utiles à cette exécution.
