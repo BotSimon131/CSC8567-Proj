@@ -112,7 +112,6 @@ Et c'est parti !
 
 Les réponses aux questions sont disponible sur ce fichier : 
 https://docs.google.com/document/d/1KiVQZojfCkBDoEwB1lAtMiXMVpQfW5SZjRIH42O0sd4/edit?usp=sharing
-
 Je ne mets pas directement les réponse dans le fichier README pour un soucis de confort de lecture (en effet, la synthaxe du README rend la lecture difficile)
 
 
